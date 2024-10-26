@@ -44,6 +44,7 @@ class KafkaEventHandler(EventHandler):
         except Exception as e:
             self.stats['errors'] += 1
             self.stats['last_error'] = str(e)
+            print(f"Kafka: Error: {str(e)}")
             raise
 
     async def cleanup(self) -> None:

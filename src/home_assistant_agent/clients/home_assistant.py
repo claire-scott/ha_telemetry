@@ -4,7 +4,7 @@ import websockets
 import time
 from datetime import datetime, timedelta
 from typing import AsyncGenerator
-from ..models.metrics import EnhancedEventStats, EventMetrics
+from models.metrics import EnhancedEventStats, EventMetrics
 
 class HomeAssistantClient:
     """Enhanced Home Assistant WebSocket client"""
@@ -21,6 +21,7 @@ class HomeAssistantClient:
             "type": "auth",
             "access_token": self.access_token
         }
+        auth_response = await websocket.recv() # wait for auth request
         await websocket.send(json.dumps(auth_message))
         auth_response = await websocket.recv()
         if json.loads(auth_response)["type"] != "auth_ok":
@@ -104,6 +105,8 @@ class HomeAssistantClient:
                 self.stats.connection_history.append(
                     (datetime.utcnow(), f"Error: {str(e)}")
                 )
+                print(f"home_assistant_agent: Error: {str(e)}")
+                print(f"{self.websocket_url}")
                 await asyncio.sleep(5)
 
     def get_uptime(self) -> timedelta:

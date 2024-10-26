@@ -8,7 +8,7 @@ handler:
   type: "kafka"  # or "console" or "azure"
 
 kafka:
-  bootstrap_servers: "localhost:9092"
+  bootstrap_servers: "192.168.1.10:9092"
   topic: "ha"
 
 azure:

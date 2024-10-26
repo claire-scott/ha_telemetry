@@ -4,12 +4,12 @@ from flask import Flask, jsonify, render_template_string
 from typing import Optional
 from datetime import datetime
 
-from .config import Config
-from .clients.home_assistant import HomeAssistantClient
-from .handlers.console import ConsoleEventHandler
-from .handlers.kafka import KafkaEventHandler
-from .handlers.azure import EventHubHandler
-from .handlers.base import EventHandler
+from config.config import Config
+from clients.home_assistant import HomeAssistantClient
+from handlers.console import ConsoleEventHandler
+from handlers.kafka import KafkaEventHandler
+from handlers.azure import EventHubHandler
+from handlers.base import EventHandler
 
 class EventProcessor:
     """Coordinates event processing between Home Assistant client and event handler"""
@@ -143,15 +143,7 @@ def create_app(config: Config) -> Application:
 
 if __name__ == "__main__":
     # Example usage
-    config = Config(
-        ha_url="ws://your-ha-instance:8123/api/websocket",
-        ha_token="your_long_lived_access_token",
-        handler_type="console",  # or "kafka" or "azure"
-        kafka_bootstrap_servers="localhost:9092",
-        kafka_topic="home-assistant-events",
-        eventhub_connection_str="your_eventhub_connection_string",
-        eventhub_name="your_eventhub_name"
-    )
+    config = Config.from_yaml('config.yml')
     
     app = create_app(config)
     app.start()

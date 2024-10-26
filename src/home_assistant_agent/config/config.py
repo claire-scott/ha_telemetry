@@ -26,7 +26,7 @@ class Config:
     # Flask configuration
     flask_host: str = '0.0.0.0'
     flask_port: int = 5000
-    debug: bool = False
+    debug: bool = True
 
     @classmethod
     def from_env(cls) -> 'Config':
