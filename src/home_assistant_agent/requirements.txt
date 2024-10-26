@@ -1,0 +1,4 @@
+flask
+websockets
+azure-eventhub
+aiokafka
