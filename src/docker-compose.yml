@@ -1,4 +1,17 @@
 services:
+  home_assistant_agent:
+    build: ./home_assistant_agent/.
+    container_name: home_assistant_agent
+    restart: unless-stopped
+    ports:
+      - "5080:5000"
+    volumes:
+      - ./home_assistant_agent/config:/config:ro
+    environment:
+      - TZ=UTC
+    depends_on:
+      - kafka
+
   zookeeper:
     image: bitnami/zookeeper:latest
     container_name: zookeeper

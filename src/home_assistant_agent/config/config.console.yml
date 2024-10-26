@@ -1,0 +1,9 @@
+home_assistant:
+  url: "ws://your-ha-instance:8123/api/websocket"
+  token: "your_long_lived_access_token"
+handler:
+  type: "console"
+flask:
+  host: "0.0.0.0"
+  port: 5000
+  debug: false

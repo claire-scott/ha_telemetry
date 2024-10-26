@@ -162,6 +162,7 @@ class HomeAssistantClient:
             "type": "auth",
             "access_token": self.access_token
         }
+        auth_response = await websocket.recv() # Wait for auth request
         await websocket.send(json.dumps(auth_message))
         auth_response = await websocket.recv()
         if json.loads(auth_response)["type"] != "auth_ok":
@@ -366,6 +367,60 @@ def dashboard():
         stats=processor.ha_client.stats,
         throughput_data=throughput_data
     )
+
+# Enhanced Flask routes
+@app.route('/api/metrics')
+def get_metrics():
+    """Get detailed metrics"""
+    return jsonify(processor.ha_client.get_performance_metrics())
+
+@app.route('/api/events/recent')
+def get_recent_events():
+    """Get recent events"""
+    return jsonify(list(processor.ha_client.stats.recent_events))
+
+@app.route('/api/events/types')
+def get_event_types():
+    """Get event type distribution"""
+    return jsonify(processor.ha_client.stats.get_event_type_distribution())
+
+@app.route('/api/errors')
+def get_errors():
+    """Get error history"""
+    return jsonify(list(processor.ha_client.stats.error_history))
+
+def main():
+    global processor
+    
+    # Create Home Assistant client
+    ha_client = HomeAssistantClient(
+        websocket_url="ws://your-ha-instance:8123/api/websocket",
+        access_token="your_long_lived_access_token"
+    )
+    
+    # Choose your event handler
+    # For Kafka:
+    event_handler = KafkaEventHandler(
+        bootstrap_servers='localhost:9092',
+        topic='home-assistant-events'
+    )
+    
+    # Create processor
+    processor = EventProcessor(ha_client, event_handler)
+    
+    # Start event processing in separate thread
+    event_thread = threading.Thread(target=run_event_loop, args=(processor,))
+    event_thread.daemon = True
+    event_thread.start()
+    
+    # Start Flask app
+    app.run(host='0.0.0.0', port=5000, debug=False)
+
+if __name__ == "__main__":
+    # Install required packages:
+    # pip install flask websockets azure-eventhub aiokafka
+    main()
+
 
 @app.route('/api/metrics')
 def metrics():

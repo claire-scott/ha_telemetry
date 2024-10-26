@@ -1,0 +1,21 @@
+# config.yaml
+
+home_assistant:
+  url: "ws://192.168.1.40:8123/api/websocket"
+  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmYTEzOGE3YzY2OWM0M2JmOWZlNWZlZTkwYjcyMWFjNyIsImlhdCI6MTcyOTkyMjcxMSwiZXhwIjoyMDQ1MjgyNzExfQ.Y3s0awCHZcdH2PsfyzJorIBdSLQLdQRfiSuPZGOjk98"
+
+handler:
+  type: "kafka"  # or "console" or "azure"
+
+kafka:
+  bootstrap_servers: "localhost:9092"
+  topic: "ha"
+
+azure:
+  connection_string: "your_eventhub_connection_string"
+  eventhub_name: "your_eventhub_name"
+
+flask:
+  host: "0.0.0.0"
+  port: 5000
+  debug: false
